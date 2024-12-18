@@ -3,74 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hand Detector</title>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <title>Hand Detection</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Hand Detector</h1>
-    <video id="videoInput" autoplay playsinline style="display: none;"></video>
-    <canvas id="outputCanvas"></canvas>
-
-    <script>
-        const video = document.getElementById('videoInput');
-        const canvas = document.getElementById('outputCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // Initialize the MediaPipe Hands model
-        const hands = new Hands({
-            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-        });
-
-        hands.setOptions({
-            maxNumHands: 2,
-            modelComplexity: 1,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
-
-        // CameraUtils to handle video input
-        const camera = new Camera(video, {
-            onFrame: async () => {
-                await hands.send({ image: video });
-            },
-            width: 840,
-            height: 680
-        });
-        
-        camera.start();
-
-        // Draw hands on canvas
-        hands.onResults(results => {
-            // Resize the canvas to match the video input
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
-            // Clear the canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw the video frame
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // Draw landmarks if hands are detected
-            if (results.multiHandLandmarks) {
-                for (const landmarks of results.multiHandLandmarks) {
-                    ctx.strokeStyle = 'blue';
-                    ctx.lineWidth = 5;
-
-                    for (let i = 0; i < landmarks.length; i++) {
-                        const x = landmarks[i].x * canvas.width;
-                        const y = landmarks[i].y * canvas.height;
-                        
-                        // Draw point
-                        ctx.beginPath();
-                        ctx.arc(x, y, 5, 0, 2 * Math.PI);
-                        ctx.fillStyle = 'green';
-                        ctx.fill();
-                    }
-                }
-            }
-        });
-    </script>
+    <video id="video" width="640" height="480" autoplay></video>
+    <script src="script.js"></script>
 </body>
 </html>
